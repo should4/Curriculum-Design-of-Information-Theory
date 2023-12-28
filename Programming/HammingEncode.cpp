@@ -4,14 +4,13 @@
 
 using namespace std;
 
-//¸ù¾İĞÅÔ´Êı¾İ »ñÈ¡ ÈßÓàÂëÊıÁ¿
-int calcRedundantBits(int dataBits)
-{
+//æ ¹æ®ä¿¡æºæ•°æ® è·å– å†—ä½™ç æ•°é‡
+int calcRedundantBits(int dataBits){
     int r = 0;
 
     while (true)
     {
-        // ¸ù¾İÈßÓàÂë ºÍ Êı¾İÁ¿¹ØÏµµÄ¹«Ê½     
+        // æ ¹æ®å†—ä½™ç  å’Œ æ•°æ®é‡å…³ç³»çš„å…¬å¼     
         // 2^r >= m + r + 1
 
         if (pow(2, r) >= dataBits + r + 1)
@@ -23,10 +22,10 @@ int calcRedundantBits(int dataBits)
     return r;
 }
 
-//¸øÈßÓàÂëËù´¦Î»ÖÃÕ¼Î»
+//ç»™å†—ä½™ç æ‰€å¤„ä½ç½®å ä½
 void positionRedundantBits(vector<int>& dataWithParity, int r)
 {
-    //ÕÒµ½ Ã¿¸öÈßÓàÂëÎ»ÖÃ ²¢½«ÆäÖµ³õÊ¼»¯ Îª -1 ÒÔÓÚÊı¾İÎ»Çø·Ö
+    //æ‰¾åˆ° æ¯ä¸ªå†—ä½™ç ä½ç½® å¹¶å°†å…¶å€¼åˆå§‹åŒ– ä¸º -1 ä»¥äºæ•°æ®ä½åŒºåˆ†
     for (int i = 0;i < r;++i)
     {
         dataWithParity.insert(dataWithParity.begin() + static_cast<int>(pow(2, i)) - 1,-1);
@@ -34,15 +33,15 @@ void positionRedundantBits(vector<int>& dataWithParity, int r)
 
 }
 
-//¼ÆËã¸÷¸öÈßÓàÂëµÄÖµ
+//è®¡ç®—å„ä¸ªå†—ä½™ç çš„å€¼
 void calcRedundantBits(vector<int>& dataWithParity, int r)
 {
     for (int i = 0;i < r;++i)
     {
-        int x = static_cast<int>(pow(2, i));//ÈßÓàÂëµÄÎ»ÖÃ
-        int count = 0;//ÈßÓàÂëÖµ³õÊ¼»¯
-        //ÈßÓàÂë¼ÆËã¹æÔò
-        //±éÀúÊı¾İÎ» ½« Êı¾İ£¨Âú×ãÔÚHamming±íÖĞÎ»ÖÃÖµ °üº¬ x Òò×Ó£© µÄÖµÈ«²¿¼ÓÆğÀ´ ½øĞĞÆæÅ¼Ğ£Ñé
+        int x = static_cast<int>(pow(2, i));//å†—ä½™ç çš„ä½ç½®
+        int count = 0;//å†—ä½™ç å€¼åˆå§‹åŒ–
+        //å†—ä½™ç è®¡ç®—è§„åˆ™
+        //éå†æ•°æ®ä½ å°† æ•°æ®ï¼ˆæ»¡è¶³åœ¨Hammingè¡¨ä¸­ä½ç½®å€¼ åŒ…å« x å› å­ï¼‰ çš„å€¼å…¨éƒ¨åŠ èµ·æ¥ è¿›è¡Œå¥‡å¶æ ¡éªŒ
         for (int j = x;j <= dataWithParity.size();j += 2 * x)
         {
             for (int k = j;k < j + x;++k)
@@ -53,26 +52,26 @@ void calcRedundantBits(vector<int>& dataWithParity, int r)
                 }
             }
         }
-        //½øĞĞ ÆæĞ£Ñé
+        //è¿›è¡Œ å¥‡æ ¡éªŒ
         //cout << "here i = " << i << " count = " << count << endl;
         dataWithParity[x - 1] = count;
     }
 }
 
-//»ñÈ¡ Hamming ±àÂë½á¹û
+//è·å– Hamming ç¼–ç ç»“æœ
 vector<int> encodeHamming(vector<int> data)
 {
     vector<int> dataWithParity(data);
 
-    //»ñÈ¡ÈßÓàÂëÊı
+    //è·å–å†—ä½™ç æ•°
     int r = calcRedundantBits(data.size());
 
     cout << "redundant bits = " << r << endl;
 
-    //¸ù¾İÈßÓàÂëÊı ¹¹½¨±àÂëÊı×é
+    //æ ¹æ®å†—ä½™ç æ•° æ„å»ºç¼–ç æ•°ç»„
     positionRedundantBits(dataWithParity, r);
 
-    //¼ÆËã¸÷¸öÈßÓàÂëµÄÖµ
+    //è®¡ç®—å„ä¸ªå†—ä½™ç çš„å€¼
     calcRedundantBits(dataWithParity, r);
 
     return dataWithParity;
@@ -80,7 +79,7 @@ vector<int> encodeHamming(vector<int> data)
 
 int main()
 {
-	vector<int> data = { 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1 };//²âÊÔÊı¾İ//0 0 0 0 1 0 1 1 0 1 1 1 1 1 0 1 0 0 0 1
+	vector<int> data = { 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1 };//æµ‹è¯•æ•°æ®//0 0 0 0 1 0 1 1 0 1 1 1 1 1 0 1 0 0 0 1
 
     cout << "root data :";
     for (auto bit : data)
